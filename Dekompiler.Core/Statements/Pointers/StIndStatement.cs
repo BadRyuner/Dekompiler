@@ -28,7 +28,8 @@ public class StIndStatement : CompleteStatement
         CilCode.Stind_R4,
         CilCode.Stind_R8,
         CilCode.Stind_Ref,
-        CilCode.Stobj
+        CilCode.Stobj,
+        CilCode.Cpobj
     };
 
     public override void Deserialize(CilInstruction instruction)
@@ -47,7 +48,7 @@ public class StIndStatement : CompleteStatement
             CilCode.Stind_R4 => corLib.Single,
             CilCode.Stind_R8 => corLib.Double,
             CilCode.Stind_Ref => corLib.Object,
-            CilCode.Stobj => ((ITypeDefOrRef)instruction.Operand!).ToTypeSignature(),
+            CilCode.Stobj or CilCode.Cpobj => ((ITypeDefOrRef)instruction.Operand!).ToTypeSignature(),
             _ => throw new ArgumentOutOfRangeException()
         };
     }

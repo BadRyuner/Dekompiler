@@ -1,6 +1,7 @@
 ﻿using AsmResolver.DotNet;
 using Dekompiler.Core.Declaration;
 using Dekompiler.Core.Statements;
+using Dekompiler.Core.Statements.Miscellaneous;
 using Microsoft.AspNetCore.Components;
 
 namespace Dekompiler.Core.Results;
@@ -56,7 +57,7 @@ public class MethodDecompilationResult : IDecompilationResult
                 {
                     builder.AddContent(sequence++,
                         IDecompilationResult.Indent(_ctx.Renderer.Concat(statement.Render(),
-                            _ctx.Renderer.Constants.SemiColumn)));
+                            statement is LabelStatement ? null : _ctx.Renderer.Constants.SemiColumn)));
                 }
 
                 builder.AddContent(sequence, _ctx.Renderer.Constants.LeftCurlyBracket);

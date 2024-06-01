@@ -35,6 +35,7 @@ public partial class Index : ComponentBase
 		{
 			if (typeof(CommentStatement) == type) continue;
 			if (typeof(KeywordStatement) == type) continue;
+			if (typeof(LabelStatement) == type) continue;
 			if (type.IsInterface || type.IsAbstract) continue;
 			if (!typeof(Statement).IsAssignableFrom(type)) continue;
 
@@ -521,8 +522,18 @@ public partial class Index : ComponentBase
 				{
 					cilMethodBody.Instructions.ExpandMacros();
 
+					var labeledInstructions = new List<int>();
+                    foreach (var instr in cilMethodBody.Instructions)
+					{
+						if (instr.Operand is ICilLabel label)
+							labeledInstructions.Add(label.Offset);
+					}
+
 					foreach (var instr in cilMethodBody.Instructions)
 					{
+						if (labeledInstructions.Contains(instr.Offset))
+							ctx.CompleteStatements.Add(new LabelStatement(ctx, instr.Offset));
+
 						var statement = _handlers[instr.OpCode.Code](ctx);
 
 						statement.Deserialize(instr);

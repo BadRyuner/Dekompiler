@@ -1,4 +1,5 @@
-﻿using AsmResolver.DotNet.Signatures.Types;
+﻿using AsmResolver.DotNet;
+using AsmResolver.DotNet.Signatures.Types;
 using AsmResolver.PE.DotNet.Cil;
 using Dekompiler.Core.Statements.Operators;
 using Dekompiler.Core.TypeSystem;
@@ -28,7 +29,8 @@ public class LdIndStatement : PushableStatement
         CilCode.Ldind_I,
         CilCode.Ldind_R4,
         CilCode.Ldind_R8,
-        CilCode.Ldind_Ref
+        CilCode.Ldind_Ref,
+        CilCode.Ldobj
     };
 
     public override TypeSignature Type => _ldIndType!;
@@ -52,6 +54,7 @@ public class LdIndStatement : PushableStatement
             CilCode.Ldind_R4 => corLib.Single,
             CilCode.Ldind_R8 => corLib.Double,
             CilCode.Ldind_Ref => corLib.Object,
+            CilCode.Ldobj => ((ITypeDescriptor)instruction.Operand!).ToTypeSignature(),
             _ => throw new ArgumentOutOfRangeException()
         };
     }
